@@ -4,10 +4,10 @@ This Repo contains Sonarqube installation and integrated with Azure pipelines
 ## SonarQube Server installation linux(Ubuntu)
 ### Prerequisites
 * SonarQube server requires at least 2GB of RAM to run efficiently and 1 vCPU cores.
-### Platform notes
+### Platform notes [Official Doc](https://docs.sonarsource.com/sonarqube-server/10.4/requirements/prerequisites-and-overview/#platform-notes)
 #### Linux 
 > [!IMPORTANT] 
-> If you're running on Linux, you must ensure that: [Official Doc](https://docs.sonarsource.com/sonarqube-server/10.4/requirements/prerequisites-and-overview/#platform-notes)
+> If you're running on Linux, you must ensure that: 
 * ```vm.max_map_count``` is greater than or equal to 524288
 * ```fs.file-max``` is greater than or equal to 131072
 * the user running SonarQube can open at least 131072 file descriptors
@@ -169,4 +169,4 @@ sudo systemctl enable sonarqube.service
 sudo systemctl start sonarqube.service
 ```
 
-* You can now browse SonarQube at ```http://<your-server-publicIP>:9000``` the default system administrator credentials are admin/admin
+* You can now browse SonarQube at ```http://<your-server-publicIP>:9000```(the default system administrator credentials are ```admin```/```admin```)
