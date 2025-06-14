@@ -160,8 +160,8 @@ WantedBy=multi-user.target
 > Because the sonar-application jar name ends with the version of SonarQube, you will need to adjust the ```ExecStart``` command accordingly on install and at each upgrade.
 > All SonarQube directories should be owned by the ```sonarqube``` user.
 > If you have multiple Java versions, you will need to modify the ```java``` path in the ```ExecStart``` command. This also means ```SONAR_JAVA_PATH``` will not work with SonarQube as a service.
-> Make sure to follow [Platform notes](#platform-notes) in order to set limits inside your unit file. in the section ```[Service]```.
-> If you wish to do any modification of a service file, make sure to run ```sudo systemctl daemon-reload```.
+> Make sure to follow [Platform notes](#platform-notes-official-doc) in order to set limits inside your unit file. in the section ```[Service]```.
+> If you wish to do any modification of a service file, make sure to run ```sudo systemctl daemon-reload``` after that.
 
 * Once your sonarqube.service file is created and properly configured, run:
 ```
