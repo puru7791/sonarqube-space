@@ -4,6 +4,39 @@ This Repo contains Sonarqube installation and integrated with Azure pipelines
 ## SonarQube Server installation linux(Ubuntu)
 ### Prerequisites
 * SonarQube server requires at least 2GB of RAM to run efficiently and 1 vCPU cores.
+### Platform notes
+#### Linux 
+> [!IMPORTANT] 
+> If you're running on Linux, you must ensure that: [Official Doc](https://docs.sonarsource.com/sonarqube-server/10.4/requirements/prerequisites-and-overview/#platform-notes)
+* ```vm.max_map_count``` is greater than or equal to 524288
+* ```fs.file-max``` is greater than or equal to 131072
+* the user running SonarQube can open at least 131072 file descriptors
+* the user running SonarQube can open at least 8192 threads
+
+You can see the values with the following commands:
+```
+sysctl vm.max_map_count
+sysctl fs.file-max
+ulimit -n
+ulimit -u
+```
+You can set them dynamically for the current session by running the following commands as ```root```:
+```
+sysctl -w vm.max_map_count=524288
+sysctl -w fs.file-max=131072
+ulimit -n 131072
+ulimit -u 8192
+```
+To set these values more permanently, you must update either ```/etc/sysctl.d/99-sonarqube.conf``` (or ```/etc/sysctl.conf``` as you wish) to reflect these values.
+
+If you are using systemd to start ```SonarQube```, you must specify those limits inside your unit file in the section ```[Service]``` :
+```
+[Service]
+...
+LimitNOFILE=131072
+LimitNPROC=8192
+...
+```
 ### 1. Install JDK
 * The SonarQube server requires Java version 17
 ### 2. Install and Configure PostgreSQL
@@ -123,41 +156,17 @@ SuccessExitStatus=143
 [Install]
 WantedBy=multi-user.target
 ```
+> [!NOTE]
+> Because the sonar-application jar name ends with the version of SonarQube, you will need to adjust the ```ExecStart``` command accordingly on install and at each upgrade.
+> All SonarQube directories should be owned by the ```sonarqube``` user.
+> If you have multiple Java versions, you will need to modify the ```java``` path in the ```ExecStart``` command. This also means ```SONAR_JAVA_PATH``` will not work with SonarQube as a service.
+> Make sure to follow [Platform notes](#platform-notes) in order to set limits inside your unit file. in the section ```[Service]```.
+> If you wish to do any modification of a service file, make sure to run ```sudo systemctl daemon-reload```.
+
 * Once your sonarqube.service file is created and properly configured, run:
 ```
 sudo systemctl enable sonarqube.service
 sudo systemctl start sonarqube.service
 ```
-### Platform notes
-#### Linux 
-> [!IMPORTANT]
-> If you're running on Linux, you must ensure that:
-* ```vm.max_map_count``` is greater than or equal to 524288
-* ```fs.file-max``` is greater than or equal to 131072
-* the user running SonarQube can open at least 131072 file descriptors
-* the user running SonarQube can open at least 8192 threads
 
-You can see the values with the following commands:
-```
-sysctl vm.max_map_count
-sysctl fs.file-max
-ulimit -n
-ulimit -u
-```
-You can set them dynamically for the current session by running the following commands as ```root```:
-```
-sysctl -w vm.max_map_count=524288
-sysctl -w fs.file-max=131072
-ulimit -n 131072
-ulimit -u 8192
-```
-To set these values more permanently, you must update either ```/etc/sysctl.d/99-sonarqube.conf``` (or ```/etc/sysctl.conf``` as you wish) to reflect these values.
-
-If you are using systemd to start ```SonarQube```, you must specify those limits inside your unit file in the section ```[Service]``` :
-```
-[Service]
-...
-LimitNOFILE=131072
-LimitNPROC=8192
-...
-```
+* You can now browse SonarQube at ```http://<your-server-publicIP>:9000``` the default system administrator credentials are admin/admin
